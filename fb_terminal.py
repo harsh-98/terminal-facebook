@@ -56,7 +56,7 @@ class TER_fb:
    def cookieDumper(self):                                                             #Dumps cookies on first login.
       pickle.dump(self.driver.get_cookies() , open("cookies.pkl","wb"))
       print(self.driver.get_cookies())
-      
+
    def cookieInjector(self):                                                           #Injects cookies on subsequent logins.
       if os.path.isfile("cookies.pkl") == True:
          cookies = pickle.load(open("cookies.pkl", "rb"))
@@ -64,6 +64,22 @@ class TER_fb:
          for cookie in cookies:
             self.driver.add_cookie(cookie)
          self.driver.get("http://m.facebook.com/settings")
+
+   def greeting(self):
+      try:
+         data = self.driver.find_element_by_xpath("//*[contains(text(), 'Logout')]")
+         f = Figlet(font='slant')
+         self.name = re.search('\((.*?)\)',data.text).group(1) #Extracts username from 'Logout (username)' fetched from the page.
+         print(f.renderText(self.name))
+         self.name = self.name.lower()
+      except NoSuchElementException:
+            pass
+
+   def commandInput(self):
+      print("")
+      print("Use 'help' to get the list of commands. Use 'exit' to logoff.")
+      command = input("Enter command : ")
+      self.manager(command)
 
 def main():
 
