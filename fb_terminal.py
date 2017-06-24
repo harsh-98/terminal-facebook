@@ -75,6 +75,12 @@ class TER_fb:
       except NoSuchElementException:
             pass
 
+
+
+   def manager(self,command):
+    if command == "exit":
+         sys.exit()
+
    def commandInput(self):
       print("")
       print("Use 'help' to get the list of commands. Use 'exit' to logoff.")
