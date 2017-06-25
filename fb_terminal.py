@@ -3,6 +3,11 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from pyfiglet import Figlet
 import selenium.webdriver
+import requests
+import pickle
+import sys
+import re
+import os
 
 
 class TER_fb:
@@ -75,11 +80,60 @@ class TER_fb:
       except NoSuchElementException:
             pass
 
+   def home_new(self,pageNumber,click):
+         if pageNumber == 0 and click == 0:
+            self.driver.get("http://m.facebook.com")
+            print("http://m.facebook.com")
+         if click == 1:
+            try:
+               if pageNumber == 1:
+                  self.driver.find_element_by_xpath('//*[@id="m_newsfeed_stream"]/div[3]/a').click()
+               elif pageNumber > 1:
+                  self.driver.find_element_by_xpath('//*[@id="root"]/div/div[3]/a').click()
+            except NoSuchElementException as e :
+               print(e)
+               print("Cannot access the next page.")
+               self.onPage = 0
+            
+         
+         []
+         try:
+            path = 'div[role="article"]'
+            post = self.driver.find_elements_by_css_selector(path)
+            for index, i in enumerate(post):
+               #print(i.get_attribute("innerHTML"))
+               #re.(i)
+               try:
+                  print("\n\n---{}---\n{}".format(index,self.render(i.text)))
+               except (UnicodeDecodeError,UnicodeEncodeError) as e:
+                  print(e)
+         except NoSuchElementException as e:
+            print(e)
+         print("xxxxxxx")
 
+   def render(self,post):
+      post = re.sub('. Add Friend . Full Story . More',' ',post)                        #Replaces irrelevent text with ''
+      post = re.sub('Add Friend\n','',post)
+      post = re.sub('. Full Story . More','',post)
+      post = re.sub('. Like Page','',post)
+      post = re.sub('Like Page . More','',post)
+      post = re.sub('. Share','',post)
+      post = re.sub('More','',post)
+      post = re.sub('. More','',post)
+      post = re.sub('Share','',post)
+      post = re.sub('Join Page','',post)
+      post = re.sub('Like Page','',post)
+      post = re.sub('Join Event','',post)
+
+      return post
 
    def manager(self,command):
     if command == "exit":
          sys.exit()
+    elif command == "new":
+         self.home_new(0,0)
+
+    self.commandInput()
 
    def commandInput(self):
       print("")
