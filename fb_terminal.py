@@ -80,6 +80,14 @@ class TER_fb:
       except NoSuchElementException:
             pass
 
+   def friendWriter(self,friendList):
+      if os.path.isfile("friendList.pkl") == True:
+         file = open("friendList.pkl",'wb')
+      else:
+         print("Generating Friend List for the first time.")
+         file = open("friendList.pkl",'wb')      
+      pickle.dump(friendList,file)
+
    def home_new(self,pageNumber,click):
          if pageNumber == 0 and click == 0:
             self.driver.get("http://m.facebook.com")
@@ -127,11 +135,50 @@ class TER_fb:
 
       return post
 
+
+   def friendWriter(self,friendList):
+      if os.path.isfile("friendList.pkl") == True:
+         file = open("friendList.pkl",'wb')
+      else:
+         print("Generating Friend List for the first time.")
+         file = open("friendList.pkl",'wb')      
+      pickle.dump(friendList,file)
+
+   def friendList(self):
+      holder = []
+      n = 0
+      dummy = 0
+      
+      print("Fetching Friend List",end='')
+
+      while n <= 500:
+         print(".",end='')
+         sys.stdout.flush()
+         try:
+            self.driver.get("https://m.facebook.com/friends/center/friends/?ppk={}".format(n))
+            a = 1
+            while a<= 10:
+               element = self.driver.find_element_by_xpath('//*[@id="friends_center_main"]/div[2]/div[{}]/table/tbody/tr/td[2]/a'.format(a))
+               holder.append(element.text + "," + element.get_attribute("href").split('/')[6].split('&')[0].split('?uid=')[1])
+               a += 1
+            n += 1
+         except NoSuchElementException:
+            try:
+               elem = self.driver.find_element_by_xpath('//*[@id="friends_center_main"]/div[2]/div[1]/table/tbody/tr/td[2]/a')
+               n += 1
+            except:
+               break
+
+      print("")    
+      return holder
+
    def manager(self,command):
     if command == "exit":
          sys.exit()
     elif command == "new":
          self.home_new(0,0)
+    elif command == "auli":
+         self.friendLiker()
 
     self.commandInput()
 
