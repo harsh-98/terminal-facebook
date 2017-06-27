@@ -135,6 +135,23 @@ class TER_fb:
 
       return post
 
+   def notify(self):
+      try:
+         self.driver.get("https://m.facebook.com/notifications")
+         temp = self.dateCurator()
+         dates = temp[0]
+         xpaths = temp[1]
+         print("\nxxxxxxx\nNotifications\nxxxxxxx\n")
+         for index,date in enumerate(dates):
+            print(date + ":")
+            notifications = self.getNotifications(xpaths[index])
+            for notification in notifications:
+               print("- - - - -")
+               print(notification)
+            print("x_x_x_x_x_x_x_x_x_x")
+      except NoSuchElementException:
+         print("xxxxxxx\nCannot Print Notifications\nxxxxxxx")
+
 
    def friendWriter(self,friendList):
       if os.path.isfile("friendList.pkl") == True:
@@ -177,6 +194,8 @@ class TER_fb:
          sys.exit()
     elif command == "new":
          self.home_new(0,0)
+    elif command == "notif":
+         self.notify()
     elif command == "auli":
          self.friendLiker()
 
