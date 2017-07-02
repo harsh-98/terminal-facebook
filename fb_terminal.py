@@ -152,6 +152,22 @@ class TER_fb:
       except NoSuchElementException:
          print("xxxxxxx\nCannot Print Notifications\nxxxxxxx")
 
+   def dateCurator(self):
+      dates = []
+      xpaths = []
+      n = 1
+      while n < 10:
+         try:            
+            xpath = '//*[@id="notifications_list"]/div[{}]/h5'.format(n)
+            date = self.driver.find_element_by_xpath(xpath).text
+            dates.append(date)
+            xpaths.append(xpath)
+            n += 1
+         except NoSuchElementException:
+            n += 1
+            break
+      return [dates,xpaths]
+
 
    def friendWriter(self,friendList):
       if os.path.isfile("friendList.pkl") == True:
