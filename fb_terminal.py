@@ -168,6 +168,20 @@ class TER_fb:
             break
       return [dates,xpaths]
 
+   def getNotifications(self,basepath):
+      notifications = []
+      n = 1
+      while n < 20:
+         try:            
+            xpath = re.sub("/h5",'',basepath)+"/div[{}]/table/tbody/tr/td[2]/a/div".format(n)
+            notification = self.driver.find_element_by_xpath(xpath).text
+            notifications.append(notification)
+            n += 1
+         except NoSuchElementException:
+            n += 1
+            break
+      return notifications
+
 
    def friendWriter(self,friendList):
       if os.path.isfile("friendList.pkl") == True:
