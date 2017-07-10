@@ -219,6 +219,103 @@ class TER_fb:
       print("")    
       return holder
 
+
+   def friendLiker(self, index_=0):
+      print("THIS WILL LIKE EACH AND EVERY POST OF A SPECIFIED FRIEND.")
+      print("ENTER 'p' TO PROCEED OR ANYTHING ELSE TO QUIT.")
+      choice = input("")
+      if choice == 'p' or choice == 'P':
+         if os.path.isfile("friendList.pkl") == False:
+            print("Friend List not found.")
+            print("Use 'unfr' first to get the initial friend list.")
+            return False
+         else:
+            print("\nxxxxxxx\nIndex : Friend (alphabetical order):\nxxxxxxx")
+            file = pickle.load(open("friendList.pkl",'rb'))
+            for index,line in enumerate(sorted(file)):
+               print(str(index)+" : "+line.split(',')[0])
+            print("\nxxxxxxx\nEnter Index\nxxxxxxx")
+            index = input("Index: ")
+
+            if int(index) == -1 :
+               for i in range(1,189):
+                  self.loadProfile(int(i))
+            elif index.isdigit() and index_==0:
+               self.loadProfile(int(index))
+            elif index.isdigit() and index_==1:
+               print("loading")
+
+               self.friendProfile(int(index), index_)
+
+            else:
+               print("Invalid Index")
+      else:
+         return False
+
+   def friendProfile(self, number, index_=0):
+      uid = 0
+      for index,line in enumerate(sorted(pickle.load(open("friendList.pkl",'rb')))):
+         if index == number:
+            uid = int(line.split(',')[1])
+            print("Liking all posts on {}'s Timeline...".format(line.split(',')[0].split()[0]))
+            break
+      print(uid)
+      if index_==1:
+         try:
+            self.driver.get("http://m.facebook.com/messages/thread/{}/?refid=17&__xt__=48.%7B%22event%22%3A%22message%22%2C%22intent_status%22%3Anull%2C%22intent_type%22%3Anull%2C%22profile_id%22%3A{}%2C%22ref%22%3A3%7D".format(uid, uid))
+            comment = input("Enter your comment:\n")
+            no = input("Enter the number of times the comment is to be printed : ")
+            for i in range(int(no)):
+              a= self.driver.find_element_by_xpath('//*[@id="composerInput"]') 
+            a.send_keys(comment)
+            self.driver.find_element_by_xpath('//input[@value="Send"]').click()
+            print("Commented.")
+         except Exception as e:
+            print("Unable to comment.")
+            print(e)
+         
+      else:
+         self.driver.get("http://m.facebook.com/{}".format(uid))
+
+   ##Friend's Timeline Liker Functions_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+   def loadProfile(self,number):
+      self.friendProfile(number)
+      try:       
+         temp = self.elementYear()
+         years = []
+         names = []
+         numberOfLikes = 0
+         alreadyLiked = 0
+         totalLiked = 0
+         totalAlreadyLiked = 0
+         for x in temp:
+            years.append(x.get_attribute("href"))
+            names.append(x.text)
+#         print(names)
+#         print(years)
+#         sys.exit(0)
+      elif "like" in command != -1:
+         operand = self.homeActionsParser(command)
+         if operand != -1:
+            self.like(operand)
+      elif "comment" in command != -1:
+         operand = self.homeActionsParser(command)
+         if operand != -1:
+            self.comment(operand)
+      elif command == "notif":
+         self.notify()
+      elif command == "auli":
+         self.friendLiker()
+      elif command == "message":
+         self.friendLiker(1)
+      elif command == "get_page":
+         self.get_page()
+      else:
+         print("Invalid command. Use 'help' to get a list of commands.")
+         
+      self.commandInput()
+
    def manager(self,command):
     if command == "exit":
          sys.exit()
