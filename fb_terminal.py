@@ -237,10 +237,8 @@ class TER_fb:
             print("\nxxxxxxx\nEnter Index\nxxxxxxx")
             index = input("Index: ")
 
-            if int(index) == -1 :
-               for i in range(1,189):
-                  self.loadProfile(int(i))
-            elif index.isdigit() and index_==0:
+
+            if index.isdigit() and index_==0:
                self.loadProfile(int(index))
             elif index.isdigit() and index_==1:
                print("loading")
@@ -277,8 +275,6 @@ class TER_fb:
       else:
          self.driver.get("http://m.facebook.com/{}".format(uid))
 
-   ##Friend's Timeline Liker Functions_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
    def loadProfile(self,number):
       self.friendProfile(number)
       try:       
@@ -292,29 +288,66 @@ class TER_fb:
          for x in temp:
             years.append(x.get_attribute("href"))
             names.append(x.text)
-#         print(names)
-#         print(years)
-#         sys.exit(0)
-      elif "like" in command != -1:
-         operand = self.homeActionsParser(command)
-         if operand != -1:
-            self.like(operand)
-      elif "comment" in command != -1:
-         operand = self.homeActionsParser(command)
-         if operand != -1:
-            self.comment(operand)
-      elif command == "notif":
-         self.notify()
-      elif command == "auli":
-         self.friendLiker()
-      elif command == "message":
-         self.friendLiker(1)
-      elif command == "get_page":
-         self.get_page()
-      else:
-         print("Invalid command. Use 'help' to get a list of commands.")
-         
-      self.commandInput()
+         print(names)
+         print(years)
+        # sys.exit(0)
+         print("*one '.' == 1 Like Administered*")
+         for index,year in enumerate(years):
+            self.driver.get(year)
+            if index != 0:
+               stories = self.allStories()
+               print("\nstories\n")
+               print(stories)
+            else:
+               stories = "dummyValue"
+            print("\nxxxxxxx {} xxxxxxx".format(names[index]))
+            if stories != None:
+               if stories != "dummy":
+                  self.driver.get(stories)
+                  showmorelink = self.showMore()
+                  while showmorelink != "dummy":
+                     print("\nshowmorelinks\n")
+                     print(showmorelink)
+                     likelinks = self.friendLikeLink()
+                     print("\nlinkLinks\n")
+                     print(likelinks)
+                     alreadyLiked += likelinks[0]
+                     totalAlreadyLiked += likelinks[0]
+                     likedJustNow = self.likeAllLinks(likelinks[1])
+                     numberOfLikes += likedJustNow
+                     totalLiked += likedJustNow
+                     self.driver.get(showmorelink)
+                     showmorelink = self.showMore()
+                  if showmorelink == "dummy":
+                     likelinks = self.friendLikeLink()
+                     alreadyLiked += likelinks[0]
+                     totalAlreadyLiked += likelinks[0]
+                     likedJustNow = self.likeAllLinks(likelinks[1])
+                     numberOfLikes += likedJustNow
+                     totalLiked += likedJustNow
+                  print("\nPosts liked now: {}".format(numberOfLikes))
+                  print("Posts already liked: {}".format(alreadyLiked))
+                  numberOfLikes = 0
+                  alreadyLiked = 0
+               else:
+                  print("Failed")
+            if stories == None:
+               likelinks = self.friendLikeLink()
+               alreadyLiked += likelinks[0]
+               totalAlreadyLiked += likelinks[0]
+               likedJustNow = self.likeAllLinks(likelinks[1])
+               numberOfLikes += likedJustNow
+               totalLiked += likedJustNow               
+               print("\nPosts liked now: {}".format(numberOfLikes))
+               print("Posts already liked: {}".format(alreadyLiked))
+               numberOfLikes = 0
+               alreadyLiked = 0
+         print("\nxxxxxxx REPORT xxxxxxx\n")
+         print("Total Likes Administered Now: {}".format(totalLiked))
+         print("Number Of Already Liked Posts: {}".format(totalAlreadyLiked))
+         print("Total Likes on Friend's Timeline: {}".format(totalLiked + totalAlreadyLiked))       
+      except NoSuchElementException:
+         print("Can't Proceed")
 
    def manager(self,command):
     if command == "exit":
