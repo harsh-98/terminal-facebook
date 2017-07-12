@@ -463,15 +463,45 @@ class TER_fb:
             print("Failed")
       return numberOfLikes
 
+   def get_page(self):
+            s=self.driver.find_element_by_css_selector("html").get_attribute("innerHTML")
+            file=open("t.html","a")
+            file.write(s)
+            file.close()
+
    def manager(self,command):
-    if command == "exit":
+      if command == "help":
+         if os.path.isfile("commands.txt"):
+            file = open("commands.txt")
+            for line in file.readlines():
+               print(line)
+         else:
+            print("Commands list missing.")
+      elif command == "exit":
          sys.exit()
-    elif command == "new":
+      elif command == "unfr":
+         self.onPage = 0
+         self.notInList()
+      elif command == "new":
          self.home_new(0,0)
-    elif command == "notif":
+      elif "like" in command != -1:
+         operand = self.homeActionsParser(command)
+         if operand != -1:
+            self.like(operand)
+      elif "comment" in command != -1:
+         operand = self.homeActionsParser(command)
+         if operand != -1:
+            self.comment(operand)
+      elif command == "notif":
          self.notify()
-    elif command == "auli":
+      elif command == "auli":
          self.friendLiker()
+      elif command == "message":
+         self.friendLiker(1)
+      elif command == "get_page":
+         self.get_page()
+      else:
+         print("Invalid command. Use 'help' to get a list of commands.")
 
     self.commandInput()
 
