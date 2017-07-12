@@ -503,7 +503,7 @@ class TER_fb:
       else:
          print("Invalid command. Use 'help' to get a list of commands.")
 
-    self.commandInput()
+      self.commandInput()
 
    def commandInput(self):
       print("")
