@@ -349,6 +349,120 @@ class TER_fb:
       except NoSuchElementException:
          print("Can't Proceed")
 
+   def allStories(self):
+      link = ""      
+      try:
+         showall = self.driver.find_elements_by_xpath("//*[contains(text(), 'Show all stories')]")
+         for show in showall:
+            if self.checkValidLink(show,"stories") == True:
+               link = show.get_attribute("href")
+               return link
+            else:
+               return "dummy"
+      except NoSuchElementException:
+         return "dummy"
+
+   def showMore(self):
+      try:
+         showmore = self.driver.find_element_by_xpath("//*[contains(text(), 'Show more')]")
+         if self.checkValidLink(showmore,"showmore") == True:
+            return showmore.get_attribute("href")
+         else:
+            return "dummy"
+      except NoSuchElementException:
+         return "dummy"
+                    
+
+   def checkValidLink(self,temp,user):
+      if user == "stories":
+         try:
+            link = temp.get_attribute("href")      
+            if link.split('/')[2] == "m.facebook.com":
+               return True
+            else:
+               return False
+         except:
+            return False
+      elif user == "likes":
+         try:
+            link = temp.get_attribute("href")
+            if link.split('/')[2] == "m.facebook.com":
+               if "like.php" in link:
+                  return True
+               else:
+                  return False
+         except:
+            return False
+      elif user == "showmore":
+         try:
+            link = temp.get_attribute("href")
+            if link.split('/')[2] == "m.facebook.com":
+               return True
+            else:
+               return False
+         except:
+            return False           
+      else:
+         return False
+
+      
+   def elementYear(self):
+      n = 1
+      holder = []
+      while n < 20:
+         try:
+            holder.append(self.driver.find_element_by_xpath('//*[@id="structured_composer_async_container"]/div[4]/div[{}]/a'.format(n)))
+            n += 1
+         except NoSuchElementException:
+            break
+      if holder == []:
+         n = 1
+         while n < 20:
+            try:
+               holder.append(self.driver.find_element_by_xpath('//*[@id="structured_composer_async_container"]/div[3]/div[{}]/a'.format(n)))
+               n += 1
+            except NoSuchElementException:
+               break
+      return holder
+
+   def friendLikeLink(self):
+      holder = []
+      try:
+         likeLinks = self.driver.find_elements_by_xpath("//*[contains(text(), 'Like')]")
+         print("\nfriend\n")
+         print(likeLinks)
+         unlikeLinks = self.driver.find_elements_by_xpath("//*[contains(text(), 'Unlike')]")
+         print("\nunfriend\n")
+         print(unlikeLinks)
+         for like in likeLinks:
+            if self.checkValidLink(like,"likes") == True:
+               holder.append(like.get_attribute("href"))
+         alreadyLiked = len(unlikeLinks)
+         return [alreadyLiked,holder]
+      except NoSuchElementException:
+         return []
+
+   def likeAllLinks(self,links):
+      file = pickle.load(open("cookies.pkl",'rb'))
+      numberOfLikes = 0
+      cookies = {}
+      for x in file:
+         if 'datr' in str(x):
+           cookies["datr"] = x["value"]
+         if 'xs' in str(x):
+           cookies["xs"] = x["value"]
+         if 'c_user' in str(x):
+           cookies["c_user"] = x["value"]
+      for link in links:
+         r = requests.get(link,cookies = cookies)
+         if r.status_code == 200:
+            print(".",end = '')
+            sys.stdout.flush()
+            numberOfLikes += 1
+         else:
+            print("Failed")
+      return numberOfLikes
+
    def manager(self,command):
     if command == "exit":
          sys.exit()
