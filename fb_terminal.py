@@ -252,12 +252,12 @@ class TER_fb:
 
    def friendProfile(self, number, index_=0):
       uid = 0
-      for index,line in enumerate(sorted(pickle.load(open("friendList.pkl",'rb')))):
+      for index, t in enumerate(sorted(pickle.load(open("friendList.pkl",'rb')))):
          if index == number:
-            uid = int(line.split(',')[1])
-            print("Liking all posts on {}'s Timeline...".format(line.split(',')[0].split()[0]))
+            uid = int(t.split(',')[1])
+            line = t
             break
-      print(uid)
+      print("User Id = "+str(uid))
       if index_==1:
          try:
             self.driver.get("http://m.facebook.com/messages/thread/{}/?refid=17&__xt__=48.%7B%22event%22%3A%22message%22%2C%22intent_status%22%3Anull%2C%22intent_type%22%3Anull%2C%22profile_id%22%3A{}%2C%22ref%22%3A3%7D".format(uid, uid))
@@ -265,14 +265,15 @@ class TER_fb:
             no = input("Enter the number of times the comment is to be printed : ")
             for i in range(int(no)):
               a= self.driver.find_element_by_xpath('//*[@id="composerInput"]') 
-            a.send_keys(comment)
-            self.driver.find_element_by_xpath('//input[@value="Send"]').click()
+              a.send_keys(comment)
+              self.driver.find_element_by_xpath('//input[@value="Send"]').click()
             print("Commented.")
          except Exception as e:
             print("Unable to comment.")
             print(e)
          
       else:
+         print("Liking all posts on {}'s Timeline...".format(line.split(',')[0].split()[0]))
          self.driver.get("http://m.facebook.com/{}".format(uid))
 
    def loadProfile(self,number):
