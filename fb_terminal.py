@@ -505,6 +505,36 @@ class TER_fb:
 
       self.commandInput()
 
+   def notInList(self):
+      comparison = self.friendComparator(self.friendList())
+      if comparison == []:
+         print("xxxxxxx\nNo new Un-friends\nxxxxxxx")
+      else:
+         print("These prople are no more in your friend list: ")
+         print("CAUTION : If they haven't unfriended you, they may have deactivated their account temporarily.")
+         print("\nxxxxxxx")
+         for kickingFriend in comparison:
+            print(kickingFriend)
+         print("xxxxxxx")
+
+   def friendComparator(self,newList):
+      print("Finding who unfriended you! (or you unfriended them)")
+      kickingFriends = []
+     
+      if os.path.isfile("friendList.pkl") == True and newList != []:
+         oldFile = pickle.load(open("friendList.pkl", "rb"))
+         for line in oldFile:
+            if line not in newList:
+               kickingFriends.append(line.split(',')[0])
+      elif os.path.isfile("friendList.pkl") == False:
+         print("Failed to find the Old Friend List")
+         print("Writing new Friend List")
+      else:
+         print("Function Failed")
+
+      self.friendWriter(newList)
+      return kickingFriends
+
    def commandInput(self):
       print("")
       print("Use 'help' to get the list of commands. Use 'exit' to logoff.")
