@@ -11,5 +11,7 @@ The following commands are available in the current version:
 -> auli :- Prints your friend list and prompts for liking all the posts by a specific friend or posts the he/she was tagged in.
  *Hidden posts cannot be liked.*
 -> message :- loads friends account
--> new :- a new interface for the home page 
+-> new :- a new interface for the home page
+-> post for the open a specific post
+  then the 'comment' or 'like' the post
 xxxxx

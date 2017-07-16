@@ -260,12 +260,19 @@ class TER_fb:
       print("User Id = "+str(uid))
       if index_==1:
          try:
+#            no = input("Enter the number of times the comment is to be printed : ")
+#            for i in range(int(no)):
+#              a= self.driver.find_element_by_xpath('//*[@id="composerInput"]') 
+#              a.send_keys(comment)
             self.driver.get("http://m.facebook.com/messages/thread/{}/?refid=17&__xt__=48.%7B%22event%22%3A%22message%22%2C%22intent_status%22%3Anull%2C%22intent_type%22%3Anull%2C%22profile_id%22%3A{}%2C%22ref%22%3A3%7D".format(uid, uid))
             comment = input("Enter your comment:\n")
             no = input("Enter the number of times the comment is to be printed : ")
-            for i in range(int(no)):
-              a= self.driver.find_element_by_xpath('//*[@id="composerInput"]') 
-              a.send_keys(comment)
+            for i in range(len(comment)):
+              ccc=""
+              for in__ in range(i+1):
+               ccc+=comment[in__]
+              a= self.driver.find_element_by_xpath('//*[@name="body"]')
+              a.send_keys(ccc)
               self.driver.find_element_by_xpath('//input[@value="Send"]').click()
             print("Commented.")
          except Exception as e:
@@ -470,6 +477,22 @@ class TER_fb:
             file.write(s)
             file.close()
 
+   def post_l_c(self):
+      post_id = input("Enter the post id ")
+      self.driver.get("http://m.facebook.com/"+post_id)
+      option = input("WHETHER 'like' or 'comment' ? ")
+      if option == "like":
+         post = self.driver.find_elements_by_css_selector("div[id='MPhotoActionbar'] td:nth-child(1) a")
+         self.driver.get(post[0].get_attribute("href"))
+      elif option == "comment":
+         comment = input("Enter the comment")
+         no = input("Enter the number of times the comment is to be printed : ")
+         for i in range(int(no)):
+               post = self.driver.find_elements_by_css_selector("input[id = 'composerInput']")[0]
+               post.send_keys(comment)
+               self.driver.find_element_by_xpath('//input[@value="Comment"]').click()
+
+
    def manager(self,command):
       if command == "help":
          if os.path.isfile("commands.txt"):
@@ -501,6 +524,8 @@ class TER_fb:
          self.friendLiker(1)
       elif command == "get_page":
          self.get_page()
+      elif command == "post":
+         self.post_l_c()
       else:
          print("Invalid command. Use 'help' to get a list of commands.")
 
